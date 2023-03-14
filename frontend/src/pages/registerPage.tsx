@@ -1,23 +1,43 @@
 import { useState, useEffect } from "react";
 import { FaUser } from "react-icons/fa";
-interface FormFields {
-  name: string;
-  email: string;
-  password: string;
-  password2: string;
-}
+import { FormFields } from "../types/type";
+import { useSelector, useDispatch, TypedUseSelectorHook } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { register, reset } from "../features/auth/authSlice";
+import type { RootState, AppDispatch } from "../app/store";
+import Spinner from "../components/spinner";
 const DefaultFormFields: FormFields = {
   name: "",
   email: "",
   password: "",
   password2: "",
 };
+
 function Register() {
   //  Set State for form
   const [formData, setFormData] = useState(DefaultFormFields);
 
   const { name, email, password, password2 } = formData;
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+  const { user, isLoading, isError, isSuccess, message } = useAppSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+    if (isSuccess || user !== "null") {
+      navigate("/");
+    }
+
+    dispatch(reset);
+  }, [user, isError, isLoading, isSuccess, message, navigate, dispatch]);
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -25,7 +45,22 @@ function Register() {
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (password !== password2) {
+      toast.error("Passwor does not match");
+    } else {
+      const userData = {
+        name,
+        email,
+        password,
+      };
+      dispatch(register(userData));
+    }
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
   return (
     <>
       <section className='heading'>
