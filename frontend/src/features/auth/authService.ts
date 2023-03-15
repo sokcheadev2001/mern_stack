@@ -16,8 +16,15 @@ const register = async (userData: FormFields) => {
   return data;
 };
 
+//  Logout user
+const logout = async () => {
+  console.log(true);
+  localStorage.removeItem("user");
+};
+
 const AuthService = {
   register,
+  logout,
 };
 
 export default AuthService;
