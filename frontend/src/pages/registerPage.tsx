@@ -32,11 +32,11 @@ function Register() {
     if (isError) {
       toast.error(message);
     }
-    if (isSuccess || user !== "null") {
+    if (isSuccess || user !== null) {
       navigate("/");
     }
 
-    dispatch(reset);
+    dispatch(reset());
   }, [user, isError, isLoading, isSuccess, message, navigate, dispatch]);
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;

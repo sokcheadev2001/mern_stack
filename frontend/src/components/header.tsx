@@ -9,10 +9,9 @@ function Header() {
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
   const onLogout = () => {
-    dispatch(logout);
-    dispatch(reset);
+    dispatch(logout());
+    dispatch(reset());
     navigate("/");
-    console.log("workd");
   };
   const { user } = useAppSelector((state) => state.auth);
   return (
